@@ -3,8 +3,8 @@
     --primary-font: 'Playfair Display', serif;
     --secondary-font: 'Lato', sans-serif;
     --text-color: #333; /* Cor escura do texto */
-    --serenity-color: #A3B9C9; /* Azul Serenity principal (tom suave e acinzentado) */
-    --serenity-dark: #799AB1; /* Um pouco mais escuro para hover */
+    --serenity-color: #88B0CA; /* Azul Serenity principal (tom suave e acinzentado) */
+    --serenity-dark: #6A93AD; /* Um pouco mais escuro para hover */
     --background-color: #F7F9FB; /* Off-white muito claro / Branco sujo */
     --border-color: #E0E8EF; /* Borda suave */
 }

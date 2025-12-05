@@ -10,7 +10,9 @@ const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx33YDCd
 const LISTA_CONVIDADOS = [
     "Dayane Cordeiro",
     "Tamiris Oliveira",
-    "Ana Soares"
+    "Ana Soares",
+    "Aparecida Carla",
+    "Aparecida Maria"
     // ... Adicione aqui todos os 60 nomes EXATOS da sua lista ...
 ];
 
@@ -77,6 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitBtn = document.getElementById('submit-btn');
         const statusMessage = document.getElementById('message-status');
         
+        const radios = document.querySelectorAll('input[name="status_rsvp"]');
+
+         radios.forEach(radio => {
+            if (radio.checked) {
+            respostaSelecionada = radio.value; // Pega o valor do radio marcado
+            }
+        });
+        
         // --- VALIDAÇÃO DA LISTA FECHADA ---
         const nomeSelecionado = inputNome.value.trim();
         
@@ -120,9 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.style.display = 'block';
     
             if (data.result === 'success') {
-                statusMessage.textContent = 'Confirmação enviada com sucesso! Mal podemos esperar!';
-                statusMessage.className = 'success';
-                form.reset(); 
+                console.log(respostaSelecionada);
+                if (respostaSelecionada == "Recusou") {
+                    statusMessage.textContent = 'Que pena, obrigada por avisar!';
+                    statusMessage.className = 'success';
+                    form.reset(); 
+                } else {
+                    statusMessage.textContent = 'Confirmação enviada com sucesso! Mal podemos esperar!';
+                    statusMessage.className = 'success';
+                    form.reset(); 
+                }
             } else {
                 statusMessage.textContent = 'ERRO: Houve um problema no servidor. Tente novamente.';
                 statusMessage.className = 'error';
@@ -142,3 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// TO DO:
+/** 
+ * ver se tem como o nome não ficar hardcoded
+ * responsividade
+ * melhorar fontes
+ * validar a cor
+ * modal na resposta do site "Enviado com sucesso" + texto
+ * design do texto de quando o nome não está na lista
+ * */ 
