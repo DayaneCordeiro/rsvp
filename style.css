@@ -1,3 +1,8 @@
+/* RESET UNIVERSAL PARA RESPONSIVIDADE */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Paleta de Cores Base: Off-White, Azul Serenity, Detalhes Cinza/Prata */
 :root {
     --primary-font: 'Playfair Display', serif;
@@ -9,6 +14,11 @@
     --border-color: #E0E8EF; /* Borda suave */
 }
 
+/* Base e Reset para Garantir Responsividade */
+html {
+    /* Define o tamanho da fonte base, facilitando o cálculo de REM */
+    font-size: 16px; 
+}
 body {
     font-family: var(--secondary-font);
     color: var(--text-color);
@@ -19,6 +29,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* NOVO: Garante que o corpo não cause overflow horizontal */
+    width: 100%; 
+    overflow-x: hidden; 
 }
 
 /* Títulos - Playfair Display */
@@ -26,6 +39,8 @@ body {
     font-family: var(--primary-font);
     font-weight: 700;
     color: var(--serenity-color); 
+    /* Reduz o tamanho da fonte em telas muito pequenas */
+    font-size: clamp(1.8rem, 5vw, 2.5rem); 
     margin: 10px 0;
 }
 
@@ -35,6 +50,8 @@ body {
     width: 100%;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /* NOVO: Adiciona um Box-sizing universal para evitar overflow */
+    box-sizing: border-box; 
 }
 
 .header p {
@@ -49,10 +66,13 @@ body {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 30px 20px;
-    max-width: 500px;
-    width: 100%;
+    /* Margem vertical mantida, lateral ajustada para 15px */
+    margin: 30px 15px; 
+    /* Largura máxima para desktop, e 100% da área disponível para mobile */
+    max-width: 500px; 
+    width: calc(100% - 30px); /* 100% menos a margem de 15px de cada lado */
     border: 1px solid var(--border-color);
+    box-sizing: border-box; /* Fundamental para que o padding não estoure a largura total */
 }
 
 .form-group {
@@ -232,10 +252,12 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     text-align: center;
+    /* Garantindo que o modal também não estoure em telas muito pequenas */
     max-width: 400px;
-    width: 90%;
+    width: 90%; 
     position: relative;
     animation: fadeIn 0.3s;
+    box-sizing: border-box;
 }
 
 .modal-content h3 {
@@ -243,21 +265,19 @@ button:hover {
     color: var(--serenity-dark);
     font-size: 1.8em;
     margin-top: 0;
-    display: block; /* Garante que o H3 ocupe sua própria linha */
+    display: block;
 }
 
-/* NOVO: Estilo para o container do ícone (div/span injetada no JS) */
 .modal-content .icon-container {
-    display: block; /* Garante que o container do ícone ocupe sua própria linha */
+    display: block; 
     text-align: center;
-    margin-bottom: -35px;
+    margin-bottom: 10px; /* Reduzindo um pouco a margem para telas pequenas */
 }
 
 .modal-content .icon-container .modal-icon {
-    font-size: 2em; /* Ícone grande */
-    color: var(--serenity-color); /* Aplica a cor Serenity */
+    font-size: 3em; 
+    color: var(--serenity-color); 
     line-height: 1;
-    margin-top: 20px;
 }
 
 .modal-content p {
@@ -286,4 +306,31 @@ button:hover {
 @keyframes fadeIn {
     from {opacity: 0; transform: translateY(-20px);}
     to {opacity: 1; transform: translateY(0);}
+}
+
+/* -------------------------------------- */
+/* AJUSTES ESPECÍFICOS PARA TELAS MÓVEIS */
+/* -------------------------------------- */
+@media (max-width: 550px) {
+    .container {
+        /* Garante que o container use a largura total menos margens */
+        width: 100%;
+        margin: 20px 0;
+        padding: 20px 15px; /* Reduz o padding interno em telas pequenas */
+        border-left: none;
+        border-right: none;
+    }
+    
+    .header {
+        padding: 30px 10px;
+    }
+    
+    /* Reduz o tamanho da fonte principal um pouco mais */
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .modal-content {
+        padding: 25px 15px;
+    }
 }
