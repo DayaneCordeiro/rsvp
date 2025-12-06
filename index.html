@@ -6,6 +6,8 @@
     <title>RSVP - Confirmação de Presença</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
     <div id="loading-overlay" class="hidden">
@@ -48,6 +50,14 @@
             <p id="message-status" aria-live="polite" style="display:none; margin-top: 15px; font-weight: bold;"></p>
 
         </form>
+    </div>
+
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span> 
+            <h3 id="modal-title"></h3>
+            <p id="modal-message"></p>
+        </div>
     </div>
 
     <script src="script.js"></script>

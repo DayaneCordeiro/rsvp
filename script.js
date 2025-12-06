@@ -6,7 +6,6 @@
 const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx33YDCd-xjqyXeLDQ1k7kNwZrlUzk5oh4LGDX7l6xDo3bjTT5si200OYKRN8vPPSYI0A/exec';
 
 // ATENÇÃO: COLOQUE AQUI A SUA LISTA EXATA DE CONVIDADOS.
-// O nome digitado/selecionado DEVE ser exatamente igual a um destes itens.
 const LISTA_CONVIDADOS = [
     "Dayane Cordeiro",
     "Tamiris Oliveira",
@@ -24,7 +23,7 @@ function autocomplete(input, arr) {
 
     input.addEventListener("input", function(e) {
         let val = this.value;
-        resultsContainer.innerHTML = ""; // Limpa resultados anteriores
+        resultsContainer.innerHTML = ""; 
         
         if (!val || val.length < 2) { 
             return false;
@@ -67,8 +66,27 @@ function autocomplete(input, arr) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const inputNome = document.getElementById('nome_completo');
-    const loadingOverlay = document.getElementById('loading-overlay'); // NOVO: Elemento do loader
+    const loadingOverlay = document.getElementById('loading-overlay'); 
     
+    // Elementos do Modal
+    const modal = document.getElementById('success-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const closeSpan = document.querySelector('.close-button');
+
+    // Funções para fechar o modal
+    const closeModal = () => {
+        modal.classList.remove('visible');
+        modal.style.display = 'none';
+    };
+
+    closeSpan.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            closeModal();
+        }
+    });
+
     autocomplete(inputNome, LISTA_CONVIDADOS);
 
     document.getElementById('form-rsvp').addEventListener('submit', function(event) {
@@ -77,13 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const form = this;
         const nomeErro = document.getElementById('nome-erro');
         const submitBtn = document.getElementById('submit-btn');
-        const statusMessage = document.getElementById('message-status');
+        const statusMessage = document.getElementById('message-status'); 
+        
+        let respostaSelecionada = null;
         
         const radios = document.querySelectorAll('input[name="status_rsvp"]');
 
-         radios.forEach(radio => {
+        radios.forEach(radio => {
             if (radio.checked) {
-            respostaSelecionada = radio.value; // Pega o valor do radio marcado
+                respostaSelecionada = radio.value; 
             }
         });
         
@@ -101,12 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- ENVIO DOS DADOS ---
         
-        // 1. MOSTRA O LOAD NA TELA
         loadingOverlay.classList.remove('hidden');
         
         submitBtn.disabled = true;
         submitBtn.textContent = 'Enviando...';
-        statusMessage.style.display = 'none';
+        statusMessage.style.display = 'none'; 
     
         const formData = new FormData(form);
         const params = new URLSearchParams(formData);
@@ -122,39 +141,50 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json(); 
         })
         .then(data => {
-            // 2. ESCONDE O LOAD
             loadingOverlay.classList.add('hidden');
-            
             submitBtn.disabled = false;
             submitBtn.textContent = 'Enviar Confirmação';
-            statusMessage.style.display = 'block';
+            
+            // Ícones do Google Material Symbols dentro de um container para quebra de linha
+            const happyIconContainer = '<span class="icon-container"><span class="material-symbols-outlined modal-icon">sentiment_very_satisfied</span></span>';
+            const sadIconContainer = '<span class="icon-container"><span class="material-symbols-outlined modal-icon">sentiment_dissatisfied</span></span>';
+            
+            const titleText = "Resposta enviada!";
     
             if (data.result === 'success') {
-                console.log(respostaSelecionada);
-                if (respostaSelecionada == "Recusou") {
-                    statusMessage.textContent = 'Que pena, obrigada por avisar!';
-                    statusMessage.className = 'success';
-                    form.reset(); 
+                
+                // Limpa o H3 para inserção
+                modalTitle.innerHTML = '';
+                
+                if (respostaSelecionada === "Recusou") {
+                    modalTitle.innerHTML = titleText + sadIconContainer; 
+                    modalMessage.textContent = 'Que pena, obrigada por avisar!';
                 } else {
-                    statusMessage.textContent = 'Confirmação enviada com sucesso! Mal podemos esperar!';
-                    statusMessage.className = 'success';
-                    form.reset(); 
+                    modalTitle.innerHTML = titleText + happyIconContainer; 
+                    modalMessage.innerHTML = 'Confirmação enviada com sucesso! <br> Mal podemos esperar!';
                 }
+                
+                // Exibe o Modal
+                modal.classList.add('visible');
+                modal.style.display = 'flex';
+
+                form.reset(); 
             } else {
+                // Em caso de erro do Apps Script, usa a div de status
                 statusMessage.textContent = 'ERRO: Houve um problema no servidor. Tente novamente.';
                 statusMessage.className = 'error';
+                statusMessage.style.display = 'block';
                 console.error('Erro no servidor do Apps Script:', data.message);
             }
         })
         .catch(error => {
-            // 3. ESCONDE O LOAD (mesmo em caso de erro de rede)
             loadingOverlay.classList.add('hidden');
-            
             submitBtn.disabled = false;
             submitBtn.textContent = 'Enviar Confirmação';
-            statusMessage.style.display = 'block';
-            statusMessage.textContent = 'ERRO: Não foi possível enviar. Verifique sua conexão.';
+            // Em caso de erro de rede, usa a div de status
+            statusMessage.textContent = 'ERRO DE CONEXÃO: Não foi possível enviar. Verifique sua conexão.';
             statusMessage.className = 'error';
+            statusMessage.style.display = 'block';
             console.error('Erro de rede/fetch:', error);
         });
     });
